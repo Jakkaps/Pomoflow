@@ -7,6 +7,8 @@
 //
 
 import Cocoa
+import UserNotifications
+
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
@@ -16,69 +18,131 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     let startStopItem = NSMenuItem(title: "Start", action: #selector(AppDelegate.startTimerClicked), keyEquivalent: "s")
     let pauseContinueItem: NSMenuItem = NSMenuItem(title: "Pause", action: nil, keyEquivalent: "p")
     
-    let sessionLength = 25
-    let workLength = 60
+    let sessionLength = 10
+    let workLength = 20
     let breakLength = 5
     
     var remainingTimeSession = 0
     var remainingTimeWork = 0
+    var onBreak = false
 
     var timer: Timer?
     
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        if #available(OSX 10.14, *) {
+            let center = UNUserNotificationCenter.current()
+            
+            // Fallback on earlier versions
+            // Request permission to display alerts and play sounds.
+            center.requestAuthorization(options: [.alert, .sound])
+            { (granted, error) in
+                // Enable or disable features based on authorization.
+            }
+            
+        }
+        
         constructDefaultMenu(nil)
     }
     
-    @objc func startTimerClicked(){
-        startTimer(sessionTime: sessionLength, workTime: workLength)
+    func sendNotification(title: String, withSound: Bool){
+        if #available(OSX 10.14, *) {
+            let content = UNMutableNotificationContent()
+            content.title = title
+            if withSound{
+                content.sound = UNNotificationSound.default
+            }
+            
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+            let request = UNNotificationRequest(identifier: "timerDone", content: content, trigger: trigger)
+            
+            print(title)
+            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+        } else {
+            // Fallback on earlier versions
+        }
+        
     }
     
-    @objc func stopTimerClicked(){
-        timer?.invalidate()
-        
+    func resetMenu(){
         timeItem.title = "Ya not working"
         startStopItem.title = "Start"
         startStopItem.action = #selector(startTimerClicked)
         pauseContinueItem.action = nil
     }
     
+    @objc func startTimerClicked(){
+        startTimer(sessionTime: sessionLength, workTime: workLength)
+        startStopItem.title = "Stop"
+        startStopItem.action = #selector(stopTimerClicked)
+    }
+    
+    @objc func stopTimerClicked(){
+        timer?.invalidate()
+        resetMenu()
+    }
+    
     @objc func continueTimerClicked(){
         startTimer(sessionTime: remainingTimeSession, workTime: remainingTimeWork)
         pauseContinueItem.title = "Pause"
+        
+        if(remainingTimeSession > 0){
+            startStopItem.title = "Stop"
+            startStopItem.action = #selector(stopTimerClicked)
+        }else{
+            let whatToStart = (onBreak ? "pomdoro" : "break")
+            startStopItem.title = "Start \(whatToStart)"
+            startStopItem.action = #selector(startXEndOfSessionClicked)
+        }
     }
     
     @objc func pauseTimerClicked(){
         timer?.invalidate()
+        startStopItem.action = nil
         pauseContinueItem.title = "Continue"
         pauseContinueItem.action = #selector(continueTimerClicked)
+    }
+    
+    @objc func endOfSessionReached(){
+        let whatToStart = (onBreak ? "pomodoro" : "break")
+        startStopItem.title = "Start \(whatToStart)"
+        startStopItem.action = #selector(startXEndOfSessionClicked)
+        sendNotification(title: "Time for a \(whatToStart)", withSound: false)
+    }
+    
+    func endOfWorkSessionReached(){
+        timer?.invalidate()
+        resetMenu()
+        sendNotification(title: "YOU ARE DONE", withSound: true)
+    }
+    
+    @objc func startXEndOfSessionClicked(){
+        remainingTimeSession = (onBreak ? sessionLength : breakLength)
+        startStopItem.title = "Stop"
+        startStopItem.action = #selector(stopTimerClicked)
+        self.onBreak = !self.onBreak
     }
     
     @objc func startTimer(sessionTime: Int, workTime: Int){
         remainingTimeSession = sessionTime
         remainingTimeWork = workTime
-        var onBreak = false
         
-        self.timeItem.title = "\(remainingTimeSession)m : \(remainingTimeWork)m"
-        startStopItem.title = "Stop"
-        startStopItem.action = #selector(stopTimerClicked)
+        self.timeItem.title = "\(remainingTimeSession >= 0 ? remainingTimeSession : 0)m : \(remainingTimeWork)m"
         pauseContinueItem.action = #selector(pauseTimerClicked)
         
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+        timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { timer in
             self.remainingTimeSession -= 1
             self.remainingTimeWork -= 1
-            self.timeItem.title = "\(self.remainingTimeSession)m : \(self.remainingTimeWork)m"
             
-            if self.remainingTimeSession == 0 {
-                self.remainingTimeSession = (onBreak ? self.sessionLength : self.breakLength)
-                onBreak = !onBreak
-            }
+            self.timeItem.title = "\(self.remainingTimeSession >= 0 ? self.remainingTimeSession : 0)m : \(self.remainingTimeWork)m"
             
             if self.remainingTimeWork == 0 {
-                
+                self.endOfWorkSessionReached()
             }
             
-            
+            if self.remainingTimeSession == 0 {
+                self.endOfSessionReached()
+            }
         }
     }
     
@@ -102,7 +166,5 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         statusItem.menu = menu
     }
-
-
 }
 
