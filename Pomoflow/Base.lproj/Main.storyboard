@@ -6,6 +6,19 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--Preferences-->
+        <scene sceneID="m1Q-rP-gi8">
+            <objects>
+                <viewController title="Preferences" id="A17-hc-fJv" customClass="prefsViewController" customModule="Pomoflow" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="Y2J-Y1-xjL">
+                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </view>
+                </viewController>
+                <customObject id="zIk-ap-Wz9" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="316" y="-304"/>
+        </scene>
         <!--Application-->
         <scene sceneID="JPo-4y-FX3">
             <objects>
@@ -675,24 +688,56 @@
                         <outlet property="delegate" destination="Voe-Tx-rLC" id="PrD-fu-P6m"/>
                     </connections>
                 </application>
-                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="Pomoflow" customModuleProvider="target"/>
+                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="Pomoflow" customModuleProvider="target">
+                    <connections>
+                        <outlet property="menu" destination="t5T-3b-Lyz" id="Qg6-cF-u1I"/>
+                        <outlet property="pauseContinueItem" destination="fUd-he-bQ9" id="0QJ-j5-OcY"/>
+                        <outlet property="prefsItem" destination="7QP-8x-Ecc" id="S7R-Cj-aa0"/>
+                        <outlet property="startStopItem" destination="ixb-py-IhA" id="eZa-yM-hJG"/>
+                        <outlet property="timeItem" destination="bO6-a8-HfX" id="vo7-9H-esu"/>
+                    </connections>
+                </customObject>
+                <menu autoenablesItems="NO" id="t5T-3b-Lyz">
+                    <items>
+                        <menuItem title="Time" enabled="NO" id="bO6-a8-HfX">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                        </menuItem>
+                        <menuItem isSeparatorItem="YES" id="dsd-8e-Hqq"/>
+                        <menuItem title="Start" id="ixb-py-IhA">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="startStopClicked:" target="Voe-Tx-rLC" id="BK4-gf-hWE"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="Pause" enabled="NO" id="fUd-he-bQ9">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="pauseContinueClicked:" target="Voe-Tx-rLC" id="8e7-bo-8UQ"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem isSeparatorItem="YES" id="HjS-hE-y8f"/>
+                        <menuItem title="Preferences" id="7QP-8x-Ecc">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <segue destination="A17-hc-fJv" kind="show" id="7o0-6u-OFU"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="Quit" id="p4q-di-acc">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="quitClicked:" target="Voe-Tx-rLC" id="4xc-VW-dD7"/>
+                            </connections>
+                        </menuItem>
+                    </items>
+                </menu>
+                <box verticalHuggingPriority="750" boxType="separator" id="qT8-D2-mY7">
+                    <rect key="frame" x="0.0" y="0.0" width="96" height="5"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                </box>
                 <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="0.0"/>
-        </scene>
-        <!--Pomoflow View Controller-->
-        <scene sceneID="hIz-AP-VOD">
-            <objects>
-                <viewController id="XfG-lQ-9wD" customClass="PomoflowViewController" customModule="Pomoflow" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" wantsLayer="YES" id="m2S-Jp-Qdl">
-                        <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </view>
-                </viewController>
-                <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="75" y="655"/>
+            <point key="canvasLocation" x="-196" y="-210"/>
         </scene>
     </scenes>
 </document>

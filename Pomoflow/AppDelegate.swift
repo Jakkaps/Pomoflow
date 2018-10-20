@@ -13,21 +13,30 @@ import UserNotifications
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
 
+    
+    @IBOutlet weak var timeItem: NSMenuItem!
+    @IBOutlet weak var startStopItem: NSMenuItem!
+    @IBOutlet weak var pauseContinueItem: NSMenuItem!
+    @IBOutlet weak var prefsItem: NSMenuItem!
+    
+    @IBOutlet weak var menu: NSMenu!
+    
     let statusItem = NSStatusBar.system.statusItem(withLength:NSStatusItem.squareLength)
-    let timeItem = NSMenuItem(title: "Ya not working", action: nil, keyEquivalent: "");
-    let startStopItem = NSMenuItem(title: "Start", action: #selector(AppDelegate.startTimerClicked), keyEquivalent: "s")
-    let pauseContinueItem: NSMenuItem = NSMenuItem(title: "Pause", action: nil, keyEquivalent: "p")
     
     let sessionLength = 10
-    let workLength = 20
+    let workLength = 100
     let breakLength = 5
     
     var remainingTimeSession = 0
     var remainingTimeWork = 0
+    
     var onBreak = false
+    var started = false
+    var isPaused = false
 
     var timer: Timer?
     
+    var stringToEncourageWork = "Ya not working"
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         if #available(OSX 10.14, *) {
@@ -42,84 +51,64 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             
         }
         
-        constructDefaultMenu(nil)
+        timeItem.title = stringToEncourageWork
+        statusItem.menu = menu
     }
     
-    func sendNotification(title: String, withSound: Bool){
-        if #available(OSX 10.14, *) {
-            let content = UNMutableNotificationContent()
-            content.title = title
-            if withSound{
-                content.sound = UNNotificationSound.default
-            }
-            
-            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-            let request = UNNotificationRequest(identifier: "timerDone", content: content, trigger: trigger)
-            
-            print(title)
-            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
-        } else {
-            // Fallback on earlier versions
-        }
-        
+    
+    
+    @IBAction func quitClicked(_ sender: Any) {
+        NSApp.terminate(NSApp)
     }
     
-    func resetMenu(){
-        timeItem.title = "Ya not working"
-        startStopItem.title = "Start"
-        startStopItem.action = #selector(startTimerClicked)
-        pauseContinueItem.action = nil
-    }
-    
-    @objc func startTimerClicked(){
-        startTimer(sessionTime: sessionLength, workTime: workLength)
-        startStopItem.title = "Stop"
-        startStopItem.action = #selector(stopTimerClicked)
-    }
-    
-    @objc func stopTimerClicked(){
-        timer?.invalidate()
-        resetMenu()
-    }
-    
-    @objc func continueTimerClicked(){
-        startTimer(sessionTime: remainingTimeSession, workTime: remainingTimeWork)
-        pauseContinueItem.title = "Pause"
-        
-        if(remainingTimeSession > 0){
+    @IBAction func startStopClicked(_ sender: Any) {
+        if !started {
+            startTimer(sessionTime: sessionLength, workTime: workLength)
+            pauseContinueItem.isEnabled = true
             startStopItem.title = "Stop"
-            startStopItem.action = #selector(stopTimerClicked)
+            started = true
         }else{
-            let whatToStart = (onBreak ? "pomdoro" : "break")
-            startStopItem.title = "Start \(whatToStart)"
-            startStopItem.action = #selector(startXEndOfSessionClicked)
+            if remainingTimeSession <= 0 {
+                startXEndOfSessionClicked()
+            }else {
+                timeItem.title = stringToEncourageWork
+                timer?.invalidate()
+                startStopItem.title = "Start"
+                pauseContinueItem.isEnabled = false
+                started = false
+            }
         }
     }
     
-    @objc func pauseTimerClicked(){
-        timer?.invalidate()
-        startStopItem.action = nil
-        pauseContinueItem.title = "Continue"
-        pauseContinueItem.action = #selector(continueTimerClicked)
+    @IBAction func pauseContinueClicked(_ sender: Any) {
+        if !isPaused {
+            timer?.invalidate()
+            startStopItem.isEnabled = false
+            pauseContinueItem.title = "Continue"
+        }else{
+            startStopItem.isEnabled = true
+            startTimer(sessionTime: remainingTimeSession, workTime: remainingTimeWork)
+            pauseContinueItem.title = "Pause"
+        }
+        
+        isPaused = !isPaused
     }
     
-    @objc func endOfSessionReached(){
+    func endOfSessionReached(){
         let whatToStart = (onBreak ? "pomodoro" : "break")
         startStopItem.title = "Start \(whatToStart)"
-        startStopItem.action = #selector(startXEndOfSessionClicked)
         sendNotification(title: "Time for a \(whatToStart)", withSound: false)
     }
     
     func endOfWorkSessionReached(){
         timer?.invalidate()
-        resetMenu()
+        startStopClicked(self)
         sendNotification(title: "YOU ARE DONE", withSound: true)
     }
     
-    @objc func startXEndOfSessionClicked(){
+    func startXEndOfSessionClicked(){
         remainingTimeSession = (onBreak ? sessionLength : breakLength)
         startStopItem.title = "Stop"
-        startStopItem.action = #selector(stopTimerClicked)
         self.onBreak = !self.onBreak
     }
     
@@ -128,9 +117,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         remainingTimeWork = workTime
         
         self.timeItem.title = "\(remainingTimeSession >= 0 ? remainingTimeSession : 0)m : \(remainingTimeWork)m"
-        pauseContinueItem.action = #selector(pauseTimerClicked)
         
-        timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { timer in
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
             self.remainingTimeSession -= 1
             self.remainingTimeWork -= 1
             
@@ -146,25 +134,27 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
+    func sendNotification(title: String, withSound: Bool){
+        if #available(OSX 10.14, *) {
+            let content = UNMutableNotificationContent()
+            content.title = title
+            if withSound{
+                content.sound = UNNotificationSound.default
+            }
+            
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
+            let request = UNNotificationRequest(identifier: "timerDone", content: content, trigger: trigger)
+            
+            UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+        } else {
+            // Fallback on earlier versions
+        }
+        
+    }
+    
 
     func applicationWillTerminate(_ aNotification: Notification) {
         // Insert code here to tear down your application
-    }
-    
-    @objc func constructDefaultMenu(_ sender:Any?) {
-        let menu = NSMenu()
-        
-        menu.addItem(timeItem)
-        menu.addItem(NSMenuItem.separator())
-        
-        menu.addItem(startStopItem)
-        menu.addItem(pauseContinueItem)
-    
-        menu.addItem(NSMenuItem.separator())
-        menu.addItem(NSMenuItem(title: "Preferences", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "P"))
-        menu.addItem(NSMenuItem(title: "Quit Pomoflow", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
-        
-        statusItem.menu = menu
     }
 }
 
