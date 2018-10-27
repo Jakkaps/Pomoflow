@@ -29,7 +29,7 @@
         <!--Preferences-->
         <scene sceneID="Da0-53-TRc">
             <objects>
-                <viewController title="Preferences" id="FQA-Dd-YNE" customClass="PrefsViewController" customModule="Pomoflow" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Preferences" id="FQA-Dd-YNE" customClass="PreferencesViewController" customModule="Pomoflow" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="HBA-Pi-w2b">
                         <rect key="frame" x="0.0" y="0.0" width="416" height="214"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -43,7 +43,7 @@
                                     <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                                 </textFieldCell>
                             </textField>
-                            <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iKC-V1-k9x">
+                            <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iKC-V1-k9x" userLabel="PopUp">
                                 <rect key="frame" x="88" y="158" width="311" height="25"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <popUpButtonCell key="cell" type="push" title="Seperator" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="jVH-ZG-TEc" id="Hzv-Qw-fFu">
@@ -54,12 +54,15 @@
                                             <menuItem isSeparatorItem="YES" title="Seperator" state="on" id="jVH-ZG-TEc"/>
                                             <menuItem title="New" id="kOk-iD-b6l">
                                                 <modifierMask key="keyEquivalentModifierMask"/>
+                                                <connections>
+                                                    <action selector="newButtonClicked:" target="FQA-Dd-YNE" id="d1f-HX-nxX"/>
+                                                </connections>
                                             </menuItem>
                                         </items>
                                     </menu>
                                 </popUpButtonCell>
                                 <connections>
-                                    <action selector="popupValueChanged:" target="FQA-Dd-YNE" id="otK-Ax-1PF"/>
+                                    <action selector="popUpValueChanged:" target="FQA-Dd-YNE" id="00L-Zu-I1m"/>
                                 </connections>
                             </popUpButton>
                             <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dY5-iV-42f">
@@ -70,7 +73,7 @@
                                     <font key="font" metaFont="system"/>
                                 </buttonCell>
                                 <connections>
-                                    <action selector="okButtonClicked:" target="FQA-Dd-YNE" id="7PT-cT-wHu"/>
+                                    <action selector="okButtonClicked:" target="FQA-Dd-YNE" id="cE5-kA-NA4"/>
                                 </connections>
                             </button>
                             <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QOS-KT-P9k">
@@ -78,7 +81,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <sliderCell key="cell" state="on" alignment="left" minValue="1" maxValue="240" doubleValue="25" tickMarkPosition="above" numberOfTickMarks="60" allowsTickMarkValuesOnly="YES" sliderType="linear" id="Wk2-Xp-9J2"/>
                                 <connections>
-                                    <action selector="workLengthSliderChanged:" target="FQA-Dd-YNE" id="3PJ-xK-ee5"/>
+                                    <action selector="workLengthSliderChanged:" target="FQA-Dd-YNE" id="uqA-Xx-H1j"/>
                                 </connections>
                             </slider>
                             <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="e3R-Gj-fZL">
@@ -86,15 +89,15 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <sliderCell key="cell" state="on" alignment="left" maxValue="60" doubleValue="25.423728813559322" tickMarkPosition="above" numberOfTickMarks="60" allowsTickMarkValuesOnly="YES" sliderType="linear" id="iO9-t8-gbe"/>
                                 <connections>
-                                    <action selector="pomodoroLengthSliderChanged:" target="FQA-Dd-YNE" id="KnU-07-fLJ"/>
+                                    <action selector="pomodoroLengthSliderChanged:" target="FQA-Dd-YNE" id="X5m-OT-6oh"/>
                                 </connections>
                             </slider>
                             <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PgG-z2-vEY">
-                                <rect key="frame" x="88" y="56" width="310" height="24"/>
+                                <rect key="frame" x="88" y="54" width="310" height="24"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                                 <sliderCell key="cell" state="on" alignment="left" maxValue="60" doubleValue="16.271186440677965" tickMarkPosition="above" numberOfTickMarks="60" allowsTickMarkValuesOnly="YES" sliderType="linear" id="ag6-ZY-eoR"/>
                                 <connections>
-                                    <action selector="breakLengthSliderChanged:" target="FQA-Dd-YNE" id="d8w-hU-Ckf"/>
+                                    <action selector="breakLengthSliderChanged:" target="FQA-Dd-YNE" id="BLm-0G-Hpb"/>
                                 </connections>
                             </slider>
                             <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bO5-d7-9az">
@@ -135,17 +138,16 @@ Gw
 </string>
                                 </buttonCell>
                                 <connections>
-                                    <action selector="cancelButtonClicked:" target="FQA-Dd-YNE" id="qhs-Kf-Gaf"/>
+                                    <action selector="cancelButtonClicked:" target="FQA-Dd-YNE" id="RJj-OI-9rc"/>
                                 </connections>
                             </button>
                         </subviews>
                     </view>
                     <connections>
-                        <outlet property="breakLengthSlider" destination="PgG-z2-vEY" id="bdV-9W-kBO"/>
-                        <outlet property="okButton" destination="dY5-iV-42f" id="mVi-El-UfP"/>
-                        <outlet property="pomodoroLengthSlider" destination="e3R-Gj-fZL" id="RQQ-hK-KF1"/>
-                        <outlet property="presetsPopup" destination="iKC-V1-k9x" id="BQd-7g-eBs"/>
-                        <outlet property="workLengthSlider" destination="QOS-KT-P9k" id="3Bq-Gx-igT"/>
+                        <outlet property="breakLengthSlider" destination="PgG-z2-vEY" id="wWe-nS-GZT"/>
+                        <outlet property="pomdoroLengthSlider" destination="e3R-Gj-fZL" id="30O-d2-ffR"/>
+                        <outlet property="presetsPopUp" destination="iKC-V1-k9x" id="BjS-lw-XzP"/>
+                        <outlet property="workLengthSlider" destination="QOS-KT-P9k" id="a0V-DS-NrZ"/>
                     </connections>
                 </viewController>
                 <customObject id="ut5-tf-jYa" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>

@@ -13,7 +13,7 @@
 		B46725AC216F26600039B47A /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46725AB216F26600039B47A /* ViewController.swift */; };
 		B46725AE216F26620039B47A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B46725AD216F26620039B47A /* Assets.xcassets */; };
 		B46725B1216F26620039B47A /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B46725AF216F26620039B47A /* Main.storyboard */; };
-		B46D4A06217B1EB800EB9252 /* PrefsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46D4A05217B1EB800EB9252 /* PrefsViewController.swift */; };
+		B4C2E20D218452AA00514E5E /* PreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4C2E20C218452AA00514E5E /* PreferencesViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,7 +26,7 @@
 		B46725B0216F26620039B47A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B46725B2216F26620039B47A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B46725B3216F26620039B47A /* Pomoflow.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pomoflow.entitlements; sourceTree = "<group>"; };
-		B46D4A05217B1EB800EB9252 /* PrefsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrefsViewController.swift; sourceTree = "<group>"; };
+		B4C2E20C218452AA00514E5E /* PreferencesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,10 +64,10 @@
 				B46725AD216F26620039B47A /* Assets.xcassets */,
 				B46725AF216F26620039B47A /* Main.storyboard */,
 				B46725B2216F26620039B47A /* Info.plist */,
-				B46D4A05217B1EB800EB9252 /* PrefsViewController.swift */,
 				B46725B3216F26620039B47A /* Pomoflow.entitlements */,
 				B439FA0421822C9100E21B57 /* Preferences.swift */,
 				B439FA06218239AC00E21B57 /* PomoflowTimer.swift */,
+				B4C2E20C218452AA00514E5E /* PreferencesViewController.swift */,
 			);
 			path = Pomoflow;
 			sourceTree = "<group>";
@@ -142,9 +142,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B4C2E20D218452AA00514E5E /* PreferencesViewController.swift in Sources */,
 				B46725AC216F26600039B47A /* ViewController.swift in Sources */,
 				B439FA0521822C9100E21B57 /* Preferences.swift in Sources */,
-				B46D4A06217B1EB800EB9252 /* PrefsViewController.swift in Sources */,
 				B46725AA216F26600039B47A /* AppDelegate.swift in Sources */,
 				B439FA07218239AC00E21B57 /* PomoflowTimer.swift in Sources */,
 			);
