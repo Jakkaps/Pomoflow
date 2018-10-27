@@ -23,7 +23,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     let statusItem = NSStatusBar.system.statusItem(withLength:NSStatusItem.squareLength)
     
-    let sessionLength = 10
+    var sessionLength = 10
     let workLength = 100
     let breakLength = 5
     
@@ -37,6 +37,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var timer: Timer?
     
     var stringToEncourageWork = "Ya not working"
+    
+    var prefs = Preferences()
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         if #available(OSX 10.14, *) {

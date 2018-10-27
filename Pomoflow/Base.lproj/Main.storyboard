@@ -6,18 +6,151 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Preferences-->
-        <scene sceneID="m1Q-rP-gi8">
+        <!--Window Controller-->
+        <scene sceneID="Nxa-EH-3uy">
             <objects>
-                <viewController title="Preferences" id="A17-hc-fJv" customClass="prefsViewController" customModule="Pomoflow" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" id="Y2J-Y1-xjL">
-                        <rect key="frame" x="0.0" y="0.0" width="450" height="300"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </view>
-                </viewController>
-                <customObject id="zIk-ap-Wz9" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+                <windowController id="hiM-2k-XOe" sceneMemberID="viewController">
+                    <window key="window" title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="5xc-Mb-nYY">
+                        <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
+                        <rect key="contentRect" x="294" y="313" width="416" height="214"/>
+                        <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
+                        <connections>
+                            <outlet property="delegate" destination="hiM-2k-XOe" id="byp-Xt-wXY"/>
+                        </connections>
+                    </window>
+                    <connections>
+                        <segue destination="FQA-Dd-YNE" kind="relationship" relationship="window.shadowedContentViewController" id="h9o-Za-n9P"/>
+                    </connections>
+                </windowController>
+                <customObject id="Dre-nd-oaH" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="316" y="-304"/>
+            <point key="canvasLocation" x="379" y="-363"/>
+        </scene>
+        <!--Preferences-->
+        <scene sceneID="Da0-53-TRc">
+            <objects>
+                <viewController title="Preferences" id="FQA-Dd-YNE" customClass="PrefsViewController" customModule="Pomoflow" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" id="HBA-Pi-w2b">
+                        <rect key="frame" x="0.0" y="0.0" width="416" height="214"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zGY-Mk-RSS">
+                                <rect key="frame" x="10" y="161" width="420" height="17"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Presets: " id="sCy-rf-9Hs">
+                                    <font key="font" usesAppearanceFont="YES"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <popUpButton verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iKC-V1-k9x">
+                                <rect key="frame" x="88" y="158" width="311" height="25"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <popUpButtonCell key="cell" type="push" title="Seperator" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="jVH-ZG-TEc" id="Hzv-Qw-fFu">
+                                    <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="menu"/>
+                                    <menu key="menu" id="H1i-JW-Ods">
+                                        <items>
+                                            <menuItem isSeparatorItem="YES" title="Seperator" state="on" id="jVH-ZG-TEc"/>
+                                            <menuItem title="New" id="kOk-iD-b6l">
+                                                <modifierMask key="keyEquivalentModifierMask"/>
+                                            </menuItem>
+                                        </items>
+                                    </menu>
+                                </popUpButtonCell>
+                                <connections>
+                                    <action selector="popupValueChanged:" target="FQA-Dd-YNE" id="otK-Ax-1PF"/>
+                                </connections>
+                            </popUpButton>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dY5-iV-42f">
+                                <rect key="frame" x="345" y="3" width="57" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Ok" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="cY7-W6-mrx">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="okButtonClicked:" target="FQA-Dd-YNE" id="7PT-cT-wHu"/>
+                                </connections>
+                            </button>
+                            <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QOS-KT-P9k">
+                                <rect key="frame" x="88" y="116" width="310" height="24"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <sliderCell key="cell" state="on" alignment="left" minValue="1" maxValue="240" doubleValue="25" tickMarkPosition="above" numberOfTickMarks="60" allowsTickMarkValuesOnly="YES" sliderType="linear" id="Wk2-Xp-9J2"/>
+                                <connections>
+                                    <action selector="workLengthSliderChanged:" target="FQA-Dd-YNE" id="3PJ-xK-ee5"/>
+                                </connections>
+                            </slider>
+                            <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="e3R-Gj-fZL">
+                                <rect key="frame" x="88" y="86" width="310" height="24"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <sliderCell key="cell" state="on" alignment="left" maxValue="60" doubleValue="25.423728813559322" tickMarkPosition="above" numberOfTickMarks="60" allowsTickMarkValuesOnly="YES" sliderType="linear" id="iO9-t8-gbe"/>
+                                <connections>
+                                    <action selector="pomodoroLengthSliderChanged:" target="FQA-Dd-YNE" id="KnU-07-fLJ"/>
+                                </connections>
+                            </slider>
+                            <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PgG-z2-vEY">
+                                <rect key="frame" x="88" y="56" width="310" height="24"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <sliderCell key="cell" state="on" alignment="left" maxValue="60" doubleValue="16.271186440677965" tickMarkPosition="above" numberOfTickMarks="60" allowsTickMarkValuesOnly="YES" sliderType="linear" id="ag6-ZY-eoR"/>
+                                <connections>
+                                    <action selector="breakLengthSliderChanged:" target="FQA-Dd-YNE" id="d8w-hU-Ckf"/>
+                                </connections>
+                            </slider>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="bO5-d7-9az">
+                                <rect key="frame" x="10" y="120" width="36" height="17"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Work" id="45k-90-WVZ">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IkB-5F-aby">
+                                <rect key="frame" x="10" y="90" width="67" height="17"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Pomodoro" id="kfU-tc-tPR">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ozb-pz-0Ft">
+                                <rect key="frame" x="9" y="60" width="39" height="17"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <textFieldCell key="cell" lineBreakMode="clipping" title="Break" id="ple-iX-IVo">
+                                    <font key="font" metaFont="system"/>
+                                    <color key="textColor" name="labelColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                </textFieldCell>
+                            </textField>
+                            <button verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zVA-8S-gK4">
+                                <rect key="frame" x="5" y="3" width="82" height="32"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="uri-pW-4jB">
+                                    <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                    <font key="font" metaFont="system"/>
+                                    <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                                </buttonCell>
+                                <connections>
+                                    <action selector="cancelButtonClicked:" target="FQA-Dd-YNE" id="qhs-Kf-Gaf"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                    </view>
+                    <connections>
+                        <outlet property="breakLengthSlider" destination="PgG-z2-vEY" id="bdV-9W-kBO"/>
+                        <outlet property="okButton" destination="dY5-iV-42f" id="mVi-El-UfP"/>
+                        <outlet property="pomodoroLengthSlider" destination="e3R-Gj-fZL" id="RQQ-hK-KF1"/>
+                        <outlet property="presetsPopup" destination="iKC-V1-k9x" id="BQd-7g-eBs"/>
+                        <outlet property="workLengthSlider" destination="QOS-KT-P9k" id="3Bq-Gx-igT"/>
+                    </connections>
+                </viewController>
+                <customObject id="ut5-tf-jYa" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1086" y="-388"/>
         </scene>
         <!--Application-->
         <scene sceneID="JPo-4y-FX3">
@@ -719,7 +852,7 @@
                         <menuItem title="Preferences" id="7QP-8x-Ecc">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
-                                <segue destination="A17-hc-fJv" kind="show" id="7o0-6u-OFU"/>
+                                <segue destination="hiM-2k-XOe" kind="show" id="OxV-xK-TFO"/>
                             </connections>
                         </menuItem>
                         <menuItem title="Quit" id="p4q-di-acc">
