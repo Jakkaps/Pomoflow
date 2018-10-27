@@ -23,9 +23,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     let statusItem = NSStatusBar.system.statusItem(withLength:NSStatusItem.squareLength)
     
-    var sessionLength = 10
-    let workLength = 100
-    let breakLength = 5
+    var pomodoroLength = 25
+    var workLength = 120
+    var breakLength = 5
     
     var remainingTimeSession = 0
     var remainingTimeWork = 0
@@ -53,31 +53,98 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             
         }
         
+        setTimesFromPreferences()
+        resetMenu()
+        listenForPrefsChanged()
         timeItem.title = stringToEncourageWork
         statusItem.menu = menu
     }
     
-    
+    func setTimesFromPreferences(){
+        let currentTimer = prefs.returnSelectedTimer()
+        workLength = currentTimer.workLength
+        pomodoroLength = currentTimer.pomodoroLength
+        breakLength = currentTimer.breakLength
+    }
     
     @IBAction func quitClicked(_ sender: Any) {
         NSApp.terminate(NSApp)
     }
     
+    fileprivate func resetMenu() {
+        timeItem.title = stringToEncourageWork
+        startStopItem.title = "Start"
+        pauseContinueItem.isEnabled = false
+        
+        //First you have to remove the old presets
+        for item in menu.items{
+            if item.tag == 1{
+                menu.removeItem(item)
+            }
+        }
+        
+        let timers = prefs.returnAllTimers()
+        //Start insering the items 4 steps into the menu
+        var menuPositionToInsertAt = 5
+        for (index, timer) in timers.enumerated() {
+            let name = "\(index + 1): \(timer.workLength)/\(timer.pomodoroLength)/\(timer.breakLength)"
+            let menuItem = NSMenuItem(title: name, action: #selector(differentPresetSelcted(sender:)), keyEquivalent: "")
+            
+            //All presets have this tag so they can be easily removed
+            menuItem.tag = 1
+            
+            if index == prefs.selected{
+                menuItem.state = .on
+            }
+            
+            menu.insertItem(menuItem, at: menuPositionToInsertAt)
+
+            menuPositionToInsertAt += 1
+        }
+        menu.insertItem(NSMenuItem.separator(), at: menuPositionToInsertAt)
+    }
+    
+    @objc func differentPresetSelcted(sender: NSMenuItem){
+        let newlySelectedPresetIndex = menu.index(of: sender) - 5
+        prefs.selected = newlySelectedPresetIndex
+        prefs.save()
+        resetMenu()
+        setTimesFromPreferences()
+    }
+    
+    func listenForPrefsChanged(){
+        let notificationName = Notification.Name(rawValue: "PrefsChanged")
+        NotificationCenter.default.addObserver(forName: notificationName,
+                                               object: nil, queue: nil) {
+                                                (notification) in
+                                                self.timer?.invalidate()
+                                                self.prefs = Preferences()
+                                                print(self.prefs.selected)
+                                                self.setTimesFromPreferences()
+                                                self.resetMenu()
+                                                
+        }
+    }
+    
     @IBAction func startStopClicked(_ sender: Any) {
         if !started {
-            startTimer(sessionTime: sessionLength, workTime: workLength)
+            startTimer(sessionTime: pomodoroLength, workTime: workLength)
             pauseContinueItem.isEnabled = true
             startStopItem.title = "Stop"
             started = true
+            
+            for item in menu.items{
+                if item.tag == 1{
+                    menu.removeItem(item)
+                }
+            }
         }else{
             if remainingTimeSession <= 0 {
                 startXEndOfSessionClicked()
             }else {
-                timeItem.title = stringToEncourageWork
-                timer?.invalidate()
-                startStopItem.title = "Start"
-                pauseContinueItem.isEnabled = false
                 started = false
+                timer?.invalidate()
+                resetMenu()
             }
         }
     }
@@ -109,7 +176,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func startXEndOfSessionClicked(){
-        remainingTimeSession = (onBreak ? sessionLength : breakLength)
+        remainingTimeSession = (onBreak ? pomodoroLength : breakLength)
         startStopItem.title = "Stop"
         self.onBreak = !self.onBreak
     }

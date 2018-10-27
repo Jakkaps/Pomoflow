@@ -43,9 +43,9 @@ class PreferencesViewController: NSViewController {
         }
     }
     
-    
     @IBAction func popUpValueChanged(_ sender: Any) {
         prefs.selected = presetsPopUp.indexOfSelectedItem
+        print(prefs.selected)
         updateSlidersForCurrentTimer()
     }
     
@@ -85,6 +85,8 @@ class PreferencesViewController: NSViewController {
     
     @IBAction func okButtonClicked(_ sender: Any) {
         prefs.save()
+        NotificationCenter.default.post(name: Notification.Name(rawValue: "PrefsChanged"),
+                                        object: nil)
         view.window?.close()
     }
     
