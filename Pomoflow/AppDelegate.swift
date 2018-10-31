@@ -72,6 +72,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     fileprivate func resetMenu() {
+        let icon = NSImage(named: "statusIcon")
+        statusItem.image = icon
         timeItem.title = stringToEncourageWork
         startStopItem.title = "Start"
         pauseContinueItem.isEnabled = false
@@ -185,6 +187,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func startTimer(sessionTime: Int, workTime: Int){
         remainingTimeSession = sessionTime
         remainingTimeWork = workTime
+        statusItem.image = NSImage(named: "statusIconRunning")
         
         self.timeItem.title = "\(remainingTimeSession >= 0 ? remainingTimeSession : 0)m : \(remainingTimeWork)m"
         
