@@ -39,6 +39,11 @@ struct Preferences {
         selected = timePresets.count - 1
     }
     
+    mutating func removeTimer(at index: Int){
+        timePresets.remove(at: index)
+        selected = (selected == 0 ? 0 : selected - 1)
+    }
+    
     mutating func setWorkLengthCurrentTimer(workLength: Int){
         timePresets[selected].workLength = workLength
     }

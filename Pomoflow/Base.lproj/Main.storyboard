@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14313.18"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -58,6 +58,12 @@
                                                     <action selector="newButtonClicked:" target="FQA-Dd-YNE" id="d1f-HX-nxX"/>
                                                 </connections>
                                             </menuItem>
+                                            <menuItem title="Delete" id="6hE-QF-783">
+                                                <modifierMask key="keyEquivalentModifierMask"/>
+                                                <connections>
+                                                    <action selector="deleteButtonClicked:" target="FQA-Dd-YNE" id="PkH-bD-uGS"/>
+                                                </connections>
+                                            </menuItem>
                                         </items>
                                     </menu>
                                 </popUpButtonCell>
@@ -79,7 +85,7 @@
                             <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QOS-KT-P9k">
                                 <rect key="frame" x="88" y="116" width="310" height="24"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <sliderCell key="cell" state="on" alignment="left" minValue="1" maxValue="240" doubleValue="25" tickMarkPosition="above" numberOfTickMarks="60" allowsTickMarkValuesOnly="YES" sliderType="linear" id="Wk2-Xp-9J2"/>
+                                <sliderCell key="cell" state="on" alignment="left" minValue="1" maxValue="240" doubleValue="25.305084745762713" tickMarkPosition="above" numberOfTickMarks="60" allowsTickMarkValuesOnly="YES" sliderType="linear" id="Wk2-Xp-9J2"/>
                                 <connections>
                                     <action selector="workLengthSliderChanged:" target="FQA-Dd-YNE" id="uqA-Xx-H1j"/>
                                 </connections>

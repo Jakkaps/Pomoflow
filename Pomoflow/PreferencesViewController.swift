@@ -37,7 +37,7 @@ class PreferencesViewController: NSViewController {
     
     func cleanPopUp(){
         for menuItem in presetsPopUp.itemArray {
-            if menuItem.title != "New" && menuItem.title != "Seperator"{
+            if menuItem.title != "New" && menuItem.title != "Seperator" && menuItem.title != "Delete"{
                 presetsPopUp.removeItem(withTitle: menuItem.title)
             }
         }
@@ -76,11 +76,32 @@ class PreferencesViewController: NSViewController {
         breakLengthSlider.integerValue = currentTimer.breakLength
     }
     
+    
+    
     @IBAction func newButtonClicked(_ sender: Any) {
         //Prefs automatically sets its selected variable to the newly added pomodoflowTimer
         prefs.addTimer(PomoflowTimer(workLength: 0, pomodoroLength: 0, breakLength: 0))
         cleanPopUp()
         showCurrentPrefs()
+    }
+    @IBAction func deleteButtonClicked(_ sender: Any) {
+        //Just looks better when the delete button isn´t in focus
+        presetsPopUp.selectItem(at: prefs.selected)
+        
+        let alert = NSAlert()
+        alert.messageText = "Are you sure you want to delete this preset?"
+        alert.informativeText = "This action cannot be undone"
+        alert.alertStyle = .warning
+        
+        alert.addButton(withTitle: "Ok")
+        alert.addButton(withTitle: "Cancel")
+        
+        let response = alert.runModal()
+        if response == NSApplication.ModalResponse.alertFirstButtonReturn {
+            prefs.removeTimer(at: prefs.selected)
+            cleanPopUp()
+            showCurrentPrefs()
+        }
     }
     
     @IBAction func okButtonClicked(_ sender: Any) {
