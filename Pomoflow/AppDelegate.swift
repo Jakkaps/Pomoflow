@@ -163,6 +163,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         isPaused = !isPaused
     }
     
+    
     func endOfSessionReached(){
         let whatToStart = (onBreak ? "pomodoro" : "break")
         startStopItem.title = "Start \(whatToStart)"

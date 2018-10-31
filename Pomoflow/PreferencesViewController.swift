@@ -22,6 +22,7 @@ class PreferencesViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         showCurrentPrefs()
+        NSApp.activate(ignoringOtherApps: true)
     }
     
     func showCurrentPrefs(){

@@ -12,19 +12,19 @@
                 <windowController id="hiM-2k-XOe" sceneMemberID="viewController">
                     <window key="window" title="Preferences" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="" animationBehavior="default" id="5xc-Mb-nYY">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES"/>
-                        <rect key="contentRect" x="294" y="313" width="416" height="214"/>
+                        <rect key="contentRect" x="313" y="313" width="397" height="214"/>
                         <rect key="screenRect" x="0.0" y="0.0" width="1920" height="1057"/>
                         <connections>
                             <outlet property="delegate" destination="hiM-2k-XOe" id="byp-Xt-wXY"/>
                         </connections>
                     </window>
                     <connections>
-                        <segue destination="FQA-Dd-YNE" kind="relationship" relationship="window.shadowedContentViewController" id="h9o-Za-n9P"/>
+                        <segue destination="FQA-Dd-YNE" kind="relationship" relationship="window.shadowedContentViewController" id="ghd-Ss-bsE"/>
                     </connections>
                 </windowController>
                 <customObject id="Dre-nd-oaH" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="379" y="-363"/>
+            <point key="canvasLocation" x="388.5" y="-363"/>
         </scene>
         <!--Preferences-->
         <scene sceneID="Da0-53-TRc">
@@ -860,7 +860,8 @@ Gw
                         <menuItem title="Preferences" id="7QP-8x-Ecc">
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
-                                <segue destination="hiM-2k-XOe" kind="show" id="OxV-xK-TFO"/>
+                                <action selector="preferencesClicked:" target="Voe-Tx-rLC" id="J92-dm-oWU"/>
+                                <segue destination="hiM-2k-XOe" kind="show" id="61X-Ap-0Fw"/>
                             </connections>
                         </menuItem>
                         <menuItem title="Quit" id="p4q-di-acc">
