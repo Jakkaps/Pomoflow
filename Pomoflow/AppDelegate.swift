@@ -89,7 +89,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         //Start insering the items 4 steps into the menu
         var menuPositionToInsertAt = 5
         for (index, timer) in timers.enumerated() {
-            let name = "\(index + 1): \(timer.workLength)/\(timer.pomodoroLength)/\(timer.breakLength)"
+            let name = "\(index + 1): \(PomoflowTimer.returnAsHours(min: timer.workLength))/\(timer.pomodoroLength)/\(timer.breakLength)"
             let menuItem = NSMenuItem(title: name, action: #selector(differentPresetSelcted(sender:)), keyEquivalent: "")
             
             //All presets have this tag so they can be easily removed
@@ -189,13 +189,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         remainingTimeWork = workTime
         statusItem.image = NSImage(named: "statusIconRunning")
         
-        self.timeItem.title = "\(remainingTimeSession >= 0 ? remainingTimeSession : 0)m : \(remainingTimeWork)m"
+        self.timeItem.title = "\(remainingTimeSession >= 0 ? remainingTimeSession : 0)m : \(PomoflowTimer.returnAsHours(min: self.remainingTimeWork))"
         
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
             self.remainingTimeSession -= 1
             self.remainingTimeWork -= 1
             
-            self.timeItem.title = "\(self.remainingTimeSession >= 0 ? self.remainingTimeSession : 0)m : \(self.remainingTimeWork)m"
+            self.timeItem.title = "\(self.remainingTimeSession >= 0 ? self.remainingTimeSession : 0)m : \(PomoflowTimer.returnAsHours(min: self.remainingTimeWork))"
             
             if self.remainingTimeWork == 0 {
                 self.endOfWorkSessionReached()

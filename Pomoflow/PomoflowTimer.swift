@@ -32,4 +32,8 @@ class PomoflowTimer: NSObject, NSCoding{
         aCoder.encode(pomodoroLength, forKey: "pomodoroLength")
         aCoder.encode(breakLength, forKey: "breakLength")
     }
+    
+    static func returnAsHours(min: Int) -> String{
+        return "\(min / 60):\(min % 60)h"
+    }
 }

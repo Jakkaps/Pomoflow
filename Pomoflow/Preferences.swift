@@ -27,7 +27,7 @@ struct Preferences {
     }
     
     func returnSelectedTimer() -> PomoflowTimer{
-        return timePresets[selected]
+        return (timePresets.isEmpty ? PomoflowTimer(workLength: 0, pomodoroLength: 0, breakLength: 0): timePresets[selected])
     }
     
     func returnAllTimers() -> [PomoflowTimer] {

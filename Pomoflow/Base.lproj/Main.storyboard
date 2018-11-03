@@ -85,7 +85,7 @@
                             <slider verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QOS-KT-P9k">
                                 <rect key="frame" x="88" y="116" width="310" height="24"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <sliderCell key="cell" state="on" alignment="left" minValue="1" maxValue="240" doubleValue="25.305084745762713" tickMarkPosition="above" numberOfTickMarks="60" allowsTickMarkValuesOnly="YES" sliderType="linear" id="Wk2-Xp-9J2"/>
+                                <sliderCell key="cell" state="on" alignment="left" minValue="1" maxValue="32" doubleValue="28" tickMarkPosition="above" numberOfTickMarks="32" allowsTickMarkValuesOnly="YES" sliderType="linear" id="Wk2-Xp-9J2"/>
                                 <connections>
                                     <action selector="workLengthSliderChanged:" target="FQA-Dd-YNE" id="uqA-Xx-H1j"/>
                                 </connections>

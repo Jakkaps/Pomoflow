@@ -29,7 +29,7 @@ class PreferencesViewController: NSViewController {
         let timers = prefs.returnAllTimers()
         
         for (index, timer) in timers.enumerated(){
-            presetsPopUp.insertItem(withTitle: "\(index + 1): \(timer.workLength)/\(timer.pomodoroLength)/\(timer.breakLength)", at: index)
+            presetsPopUp.insertItem(withTitle: "\(index + 1): \(PomoflowTimer.returnAsHours(min: timer.workLength))/\(timer.pomodoroLength)m/\(timer.breakLength)m", at: index)
         }
         
         presetsPopUp.selectItem(at: prefs.selected)
@@ -46,12 +46,12 @@ class PreferencesViewController: NSViewController {
     
     @IBAction func popUpValueChanged(_ sender: Any) {
         prefs.selected = presetsPopUp.indexOfSelectedItem
-        print(prefs.selected)
         updateSlidersForCurrentTimer()
     }
     
     @IBAction func workLengthSliderChanged(_ sender: Any) {
-        prefs.setWorkLengthCurrentTimer(workLength: workLengthSlider.integerValue)
+        //Every tick is fifteen minutes
+        prefs.setWorkLengthCurrentTimer(workLength: workLengthSlider.integerValue * 15)
         updateCurrentTitle()
     }
     
@@ -67,12 +67,12 @@ class PreferencesViewController: NSViewController {
     
     func updateCurrentTitle(){
         let timer = prefs.returnSelectedTimer()
-        presetsPopUp.selectedItem?.title = "\(prefs.selected + 1): \(timer.workLength)/\(timer.pomodoroLength)/\(timer.breakLength)"
+        presetsPopUp.selectedItem?.title = "\(prefs.selected + 1): \(PomoflowTimer.returnAsHours(min: timer.workLength))/\(timer.pomodoroLength)m/\(timer.breakLength)m"
     }
     
     func updateSlidersForCurrentTimer(){
         let currentTimer = prefs.returnSelectedTimer()
-        workLengthSlider.integerValue = currentTimer.workLength
+        workLengthSlider.integerValue = currentTimer.workLength / 15
         pomdoroLengthSlider.integerValue = currentTimer.pomodoroLength
         breakLengthSlider.integerValue = currentTimer.breakLength
     }
