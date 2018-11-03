@@ -89,7 +89,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         //Start insering the items 4 steps into the menu
         var menuPositionToInsertAt = 5
         for (index, timer) in timers.enumerated() {
-            let name = "\(index + 1): \(PomoflowTimer.returnAsHours(min: timer.workLength))/\(timer.pomodoroLength)/\(timer.breakLength)"
+            let name = "\(index + 1): \(PomoflowTimer.returnAsHours(min: timer.workLength))/\(timer.pomodoroLength)m/\(timer.breakLength)m"
             let menuItem = NSMenuItem(title: name, action: #selector(differentPresetSelcted(sender:)), keyEquivalent: "")
             
             //All presets have this tag so they can be easily removed
@@ -191,7 +191,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         self.timeItem.title = "\(remainingTimeSession >= 0 ? remainingTimeSession : 0)m : \(PomoflowTimer.returnAsHours(min: self.remainingTimeWork))"
         
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+        timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { timer in
             self.remainingTimeSession -= 1
             self.remainingTimeWork -= 1
             
