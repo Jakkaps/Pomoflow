@@ -78,6 +78,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         startStopItem.title = "Start"
         pauseContinueItem.isEnabled = false
         
+        onBreak = false
+        isPaused = false
+        
         //First you have to remove the old presets
         for item in menu.items{
             if item.tag == 1{
@@ -182,6 +185,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         remainingTimeSession = (onBreak ? pomodoroLength : breakLength)
         startStopItem.title = "Stop"
         self.onBreak = !self.onBreak
+        updateTimeItem()
+    }
+    
+    private func updateTimeItem(){
+        self.timeItem.title = "\(remainingTimeSession >= 0 ? remainingTimeSession : 0)m : \(PomoflowTimer.returnAsHours(min: self.remainingTimeWork))"
     }
     
     @objc func startTimer(sessionTime: Int, workTime: Int){
@@ -189,13 +197,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         remainingTimeWork = workTime
         statusItem.image = NSImage(named: "statusIconRunning")
         
-        self.timeItem.title = "\(remainingTimeSession >= 0 ? remainingTimeSession : 0)m : \(PomoflowTimer.returnAsHours(min: self.remainingTimeWork))"
+        updateTimeItem()
         
-        timer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { timer in
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
             self.remainingTimeSession -= 1
             self.remainingTimeWork -= 1
             
-            self.timeItem.title = "\(self.remainingTimeSession >= 0 ? self.remainingTimeSession : 0)m : \(PomoflowTimer.returnAsHours(min: self.remainingTimeWork))"
+            self.updateTimeItem()
             
             if self.remainingTimeWork == 0 {
                 self.endOfWorkSessionReached()
