@@ -34,7 +34,12 @@ class PomoflowTimer: NSObject, NSCoding{
     }
     
     static func returnAsHours(min: Int) -> String{
-        let asHours = "\(min / 60):\(min % 60)"
-        return (min % 60 > 10 ? asHours : asHours + "0") + "h"
+        var asHours = "\(min / 60):"
+        if min % 60 > 9 {
+            asHours += "\(min % 60)"
+        }else{
+            asHours += "0\(min % 60)"
+        }
+        return asHours + "h"
     }
 }
