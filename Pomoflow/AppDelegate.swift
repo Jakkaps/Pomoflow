@@ -35,6 +35,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var isPaused = false
 
     var timer: Timer?
+    var workTimer: Timer?
+    var pomodoroBreakTimer: Timer?
     
     var stringToEncourageWork = "Ya not working"
     
@@ -133,7 +135,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @IBAction func startStopClicked(_ sender: Any) {
         if !started {
-            startTimer(sessionTime: pomodoroLength, workTime: workLength)
+            startTimers(sessionTime: pomodoroLength, workTime: workLength)
             pauseContinueItem.isEnabled = true
             startStopItem.title = "Stop"
             started = true
@@ -156,12 +158,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @IBAction func pauseContinueClicked(_ sender: Any) {
         if !isPaused {
-            timer?.invalidate()
+            pomodoroBreakTimer?.invalidate()
+            workTimer?.invalidate()
             startStopItem.isEnabled = false
             pauseContinueItem.title = "Continue"
         }else{
             startStopItem.isEnabled = true
-            startTimer(sessionTime: remainingTimeSession, workTime: remainingTimeWork)
+            startTimers(sessionTime: remainingTimeSession, workTime: remainingTimeWork)
             pauseContinueItem.title = "Pause"
         }
         
@@ -176,7 +179,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func endOfWorkSessionReached(){
-        timer?.invalidate()
+        workTimer?.invalidate()
+        pomodoroBreakTimer?.invalidate()
         startStopClicked(self)
         sendNotification(title: "YOU ARE DONE", withSound: true)
     }
@@ -192,25 +196,38 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.timeItem.title = "\(remainingTimeSession >= 0 ? remainingTimeSession : 0)m : \(PomoflowTimer.returnAsHours(min: self.remainingTimeWork))"
     }
     
-    @objc func startTimer(sessionTime: Int, workTime: Int){
-        remainingTimeSession = sessionTime
-        remainingTimeWork = workTime
+    @objc func startTimers(sessionTime: Int, workTime: Int){
         statusItem.image = NSImage(named: "statusIconRunning")
+        
+        remainingTimeWork = workTime
+        remainingTimeSession = sessionTime
         
         updateTimeItem()
         
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { timer in
+        startBreakPomdoroTimer(sessionTime: remainingTimeSession)
+        startWorkTimer(workTime: remainingTimeWork)
+    }
+    
+    func startBreakPomdoroTimer(sessionTime: Int){
+        remainingTimeSession = sessionTime
+        pomodoroBreakTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { timer in
             self.remainingTimeSession -= 1
-            self.remainingTimeWork -= 1
+            self.updateTimeItem()
             
+            if self.remainingTimeSession == 0 {
+                self.endOfSessionReached()
+            }
+        }
+    }
+    
+    func startWorkTimer(workTime: Int){
+        remainingTimeWork = workTime
+        workTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true) { timer in
+            self.remainingTimeWork -= 1
             self.updateTimeItem()
             
             if self.remainingTimeWork == 0 {
                 self.endOfWorkSessionReached()
-            }
-            
-            if self.remainingTimeSession == 0 {
-                self.endOfSessionReached()
             }
         }
     }
