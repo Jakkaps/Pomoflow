@@ -34,7 +34,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var started = false
     var isPaused = false
 
-    var timer: Timer?
     var workTimer: Timer?
     var pomodoroBreakTimer: Timer?
     
@@ -124,7 +123,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NotificationCenter.default.addObserver(forName: notificationName,
                                                object: nil, queue: nil) {
                                                 (notification) in
-                                                self.timer?.invalidate()
+                                                self.workTimer?.invalidate()
+                                                self.pomodoroBreakTimer?.invalidate()
                                                 self.prefs = Preferences()
                                                 print(self.prefs.selected)
                                                 self.setTimesFromPreferences()
@@ -150,7 +150,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 startXEndOfSessionClicked()
             }else {
                 started = false
-                timer?.invalidate()
+                pomodoroBreakTimer?.invalidate()
+                workTimer?.invalidate()
                 resetMenu()
             }
         }
