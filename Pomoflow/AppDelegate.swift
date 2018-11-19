@@ -11,7 +11,7 @@ import UserNotifications
 
 
 @NSApplicationMain
-class AppDelegate: NSObject, NSApplicationDelegate {
+class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDelegate{
 
     
     @IBOutlet weak var timeItem: NSMenuItem!
@@ -52,6 +52,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
                 // Enable or disable features based on authorization.
             }
             
+            //Action
+            let startNext = UNNotificationAction(identifier: "Start", title: "Start", options: .foreground)
+            
+            //Category
+            let invitationCategory = UNNotificationCategory(identifier: "TIMER", actions: [startNext], intentIdentifiers: [], options: UNNotificationCategoryOptions(rawValue: 0))
+            
+            //Register the app’s notification types and the custom actions that they support.
+            center.setNotificationCategories([invitationCategory])
+            
+            center.delegate = self
+            
         }
         
         setTimesFromPreferences()
@@ -81,6 +92,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         onBreak = false
         isPaused = false
+        started = false
+        
+        workTimer?.invalidate()
+        pomodoroBreakTimer?.invalidate()
         
         //First you have to remove the old presets
         for item in menu.items{
@@ -234,12 +249,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func sendNotification(title: String, withSound: Bool){
+        
         if #available(OSX 10.14, *) {
             let content = UNMutableNotificationContent()
             content.title = title
+            content.categoryIdentifier = "TIMER"
             if withSound{
                 content.sound = UNNotificationSound.default
             }
+            
             
             let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
             let request = UNNotificationRequest(identifier: "timerDone", content: content, trigger: trigger)
@@ -249,6 +267,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             // Fallback on earlier versions
         }
         
+    }
+    
+    @available(OSX 10.14, *)
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void)
+    {
+        switch response.notification.request.content.categoryIdentifier
+        {
+        case "TIMER":
+            if response.actionIdentifier == "Start"{
+                startXEndOfSessionClicked()
+            }
+            
+        default:
+            break
+        }
+        completionHandler()
     }
     
 
