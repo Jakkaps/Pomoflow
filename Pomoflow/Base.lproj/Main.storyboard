@@ -834,6 +834,7 @@ Gw
                         <outlet property="menu" destination="t5T-3b-Lyz" id="Qg6-cF-u1I"/>
                         <outlet property="pauseContinueItem" destination="fUd-he-bQ9" id="0QJ-j5-OcY"/>
                         <outlet property="prefsItem" destination="7QP-8x-Ecc" id="S7R-Cj-aa0"/>
+                        <outlet property="skipItem" destination="Qvt-Ni-iTg" id="I2z-FP-XrU"/>
                         <outlet property="startStopItem" destination="ixb-py-IhA" id="eZa-yM-hJG"/>
                         <outlet property="timeItem" destination="bO6-a8-HfX" id="vo7-9H-esu"/>
                     </connections>
@@ -848,6 +849,12 @@ Gw
                             <modifierMask key="keyEquivalentModifierMask"/>
                             <connections>
                                 <action selector="startStopClicked:" target="Voe-Tx-rLC" id="BK4-gf-hWE"/>
+                            </connections>
+                        </menuItem>
+                        <menuItem title="Skip" enabled="NO" id="Qvt-Ni-iTg">
+                            <modifierMask key="keyEquivalentModifierMask"/>
+                            <connections>
+                                <action selector="skipClicked:" target="Voe-Tx-rLC" id="KJ8-71-Y1o"/>
                             </connections>
                         </menuItem>
                         <menuItem title="Pause" enabled="NO" id="fUd-he-bQ9">
