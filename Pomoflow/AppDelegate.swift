@@ -9,23 +9,57 @@
 import Cocoa
 import UserNotifications
 
+enum State {
+    case paused, active, notStarted, waiting
+}
 
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDelegate, PomoflowTimerDelegate{
     
     @IBOutlet weak var timeItem: NSMenuItem!
     @IBOutlet weak var startStopItem: NSMenuItem!
-    @IBOutlet weak var skipItem: NSMenuItem!
+    @IBOutlet weak var skipStartNextItem: NSMenuItem!
     @IBOutlet weak var pauseContinueItem: NSMenuItem!
     @IBOutlet weak var prefsItem: NSMenuItem!
     
     let statusItem = NSStatusBar.system.statusItem(withLength:NSStatusItem.squareLength)
     @IBOutlet weak var menu: NSMenu!
     
+    var state : State!{
+        didSet{
+            if let state = state{
+                switch state {
+                case .paused:
+                    skipStartNextItem.isEnabled = false
+                    pauseContinueItem.title = "Continue"
+                case .active:
+                    pauseContinueItem.title = "Pause"
+                    skipStartNextItem.title = "Skip"
+                    
+                    skipStartNextItem.isEnabled = true
+                case .waiting:
+                    let whatToStart = currentTimer.onBreak ? "Break" : "Pomodoro"
+                    skipStartNextItem.title = "Start \(whatToStart)"
+                case .notStarted:
+                    let icon = NSImage(named: "statusIcon")
+                    statusItem.image = icon
+                    
+                    startStopItem.title = "Start"
+                    skipStartNextItem.title = "Skip"
+                    skipStartNextItem.action = #selector(skipStartNextClicked)
+                    timeItem.title = stringToEncourageWork
+                    
+                    skipStartNextItem.isEnabled = false
+                    pauseContinueItem.isEnabled = false
+                    changeDisplayedTimers()
+                }
+            }
+        }
+    }
+    
     var currentTimer : PomoflowTimer!
     var stringToEncourageWork = "Ya not working"
     var prefs = Preferences()
-    var active = false
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         if #available(OSX 10.14, *) {
@@ -53,7 +87,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         
         
         currentTimer = prefs.returnSelectedTimer()
-        resetMenu()
+        state = .notStarted
         listenForPrefsChanged()
         statusItem.menu = menu
     }
@@ -62,22 +96,21 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         NSApp.terminate(NSApp)
     }
     
-    fileprivate func resetMenu() {
-        let icon = NSImage(named: "statusIcon")
-        statusItem.image = icon
-
-        timeItem.title = stringToEncourageWork
-        
-        skipItem.isEnabled = false
-        pauseContinueItem.isEnabled = false
-        changeDisplayedTimers()
+    @objc func skipStartNextClicked(){
+        if state != .waiting{
+            currentTimer.skip()
+            state = .waiting
+        } else{
+            currentTimer.startNext()
+            state = .active
+        }
     }
     
     @objc func differentPresetSelcted(sender: NSMenuItem){
         let newlySelectedPresetIndex = menu.index(of: sender) - 5
         prefs.selected = newlySelectedPresetIndex
         prefs.save()
-        resetMenu()
+        state = .notStarted
         currentTimer.stop()
         currentTimer = prefs.returnSelectedTimer()
         changeDisplayedTimers()
@@ -90,7 +123,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
                                                 (notification) in
                                                 self.prefs = Preferences()
                                                 self.currentTimer.stop()
-                                                self.resetMenu()
+                                                self.state = .notStarted
                                                 self.changeDisplayedTimers()
                                                 
         }
@@ -128,28 +161,30 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
     }
     
     @IBAction func startStopClicked(_ sender: Any) {
-        if !active {
+        if state == .notStarted {
             currentTimer.delegate = self
             currentTimer.start()
-            timeItem.title = "\(currentTimer.pomodoroLength) : \(currentTimer.workLength)"
+            
             statusItem.image = NSImage(named: "statusIconRunning")
-            skipItem.isEnabled = true
+            startStopItem.title = "Stop"
+            timeItem.title = "\(currentTimer.pomodoroLength) : \(currentTimer.workLength)"
             pauseContinueItem.isEnabled = true
-    
-        }else{
+            
+            state = .active
+        } else {
             currentTimer.stop()
-            resetMenu()
+            state = .notStarted
         }
-        
-        active = !active
     }
     
     @IBAction func pauseContinueClicked(_ sender: Any) {
-        
-    }
-    
-    @IBAction func skipClicked(_ sender: Any) {
-        
+        if state != .paused{
+            currentTimer.pause()
+            state = .paused
+        }else{
+            currentTimer.unPause()
+            state = .active
+        }
     }
     
     func workFinished() {
@@ -158,10 +193,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
     
     func pomodoroFinished() {
         sendNotification(title: "Time for a break!", withSound: false)
+        state = .waiting
     }
     
     func breakFinished() {
         sendNotification(title: "Time for work yo!", withSound: false)
+        state = .waiting
     }
     
     

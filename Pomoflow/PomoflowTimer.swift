@@ -25,6 +25,8 @@ class PomoflowTimer: NSObject, NSCoding{
     var pomodoroLength: Int
     var breakLength: Int
     
+    var onBreak = false
+    
     var workLengthRemaining = 0
     var pomodoroOrBreakLengthRemaining = 0
     
@@ -49,8 +51,37 @@ class PomoflowTimer: NSObject, NSCoding{
     }
     
     func start(){
-        workLengthRemaining = workLength
-        pomodoroOrBreakLengthRemaining = pomodoroLength
+        delegate?.updateRemaingTime(workTime: workLength, pomodoroOrBreakTime: pomodoroLength)
+        
+        startLongTimer(length: workLength)
+        startShortTimer(length: pomodoroLength)
+    }
+    
+    func startBreak(){
+        startShortTimer(length: breakLength)
+    }
+    
+    func startPomodoroSession(){
+        startShortTimer(length: pomodoroLength)
+    }
+    
+    func skip(){
+        onBreak = !onBreak
+        pomodoroOrBreakLengthRemaining = 0
+        pomodoroOrBreakTimer?.invalidate()
+        delegate?.updateRemaingTime(workTime: workLengthRemaining, pomodoroOrBreakTime: pomodoroOrBreakLengthRemaining)
+    }
+    
+    func startNext(){
+        if onBreak {
+            startShortTimer(length: breakLength)
+        } else {
+            startShortTimer(length: pomodoroLength)
+        }
+    }
+    
+    private func startLongTimer(length: Int){
+        workLengthRemaining = length
         
         guard let delegate = self.delegate else {
             print("Timer has no delegate!")
@@ -71,28 +102,42 @@ class PomoflowTimer: NSObject, NSCoding{
                 self.delegate = nil
             }
         }
+    }
+    
+    private func startShortTimer(length: Int){
+        pomodoroOrBreakLengthRemaining = length
         
-        var onBreak = false
+        guard let delegate = self.delegate else {
+            print("Timer has no delegate!")
+            return
+        }
         
-        pomodoroOrBreakTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: true){ timer in
+        pomodoroOrBreakTimer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true){ timer in
             self.pomodoroOrBreakLengthRemaining -= 1
             
-            if self.pomodoroOrBreakLengthRemaining >= 0{
-                delegate.updateRemaingTime(workTime: self.workLengthRemaining, pomodoroOrBreakTime: self.pomodoroOrBreakLengthRemaining)
-            }
+            delegate.updateRemaingTime(workTime: self.workLengthRemaining, pomodoroOrBreakTime: self.pomodoroOrBreakLengthRemaining)
             
             if self.pomodoroOrBreakLengthRemaining == 0 {
-                if onBreak{
-                    self.pomodoroOrBreakLengthRemaining = self.pomodoroLength
+                if self.onBreak{
                     delegate.breakFinished()
                 }else{
-                    self.pomodoroOrBreakLengthRemaining = self.breakLength
                     delegate.pomodoroFinished()
                 }
                 
-                onBreak = !onBreak
+                timer.invalidate()
+                self.onBreak = !self.onBreak
             }
         }
+    }
+    
+    func pause(){
+        pomodoroOrBreakTimer?.invalidate()
+        workTimer?.invalidate()
+    }
+    
+    func unPause(){
+        startLongTimer(length: workLengthRemaining)
+        startShortTimer(length: pomodoroOrBreakLengthRemaining)
     }
     
     func stop(){

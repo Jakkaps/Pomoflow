@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -834,7 +833,7 @@ Gw
                         <outlet property="menu" destination="t5T-3b-Lyz" id="Qg6-cF-u1I"/>
                         <outlet property="pauseContinueItem" destination="fUd-he-bQ9" id="0QJ-j5-OcY"/>
                         <outlet property="prefsItem" destination="7QP-8x-Ecc" id="S7R-Cj-aa0"/>
-                        <outlet property="skipItem" destination="Qvt-Ni-iTg" id="I2z-FP-XrU"/>
+                        <outlet property="skipStartNextItem" destination="Qvt-Ni-iTg" id="I2z-FP-XrU"/>
                         <outlet property="startStopItem" destination="ixb-py-IhA" id="eZa-yM-hJG"/>
                         <outlet property="timeItem" destination="bO6-a8-HfX" id="vo7-9H-esu"/>
                     </connections>
