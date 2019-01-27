@@ -46,7 +46,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
                     
                     startStopItem.title = "Start"
                     skipStartNextItem.title = "Skip"
-                    skipStartNextItem.action = #selector(skipStartNextClicked)
                     timeItem.title = stringToEncourageWork
                     
                     skipStartNextItem.isEnabled = false
@@ -85,7 +84,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
             
         }
         
-        
         currentTimer = prefs.returnSelectedTimer()
         state = .notStarted
         listenForPrefsChanged()
@@ -96,7 +94,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         NSApp.terminate(NSApp)
     }
     
-    @objc func skipStartNextClicked(){
+    @IBAction func skipStartNextClicked(_ sender: Any) {
         if state != .waiting{
             currentTimer.skip()
             state = .waiting
@@ -106,27 +104,49 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         }
     }
     
-    @objc func differentPresetSelcted(sender: NSMenuItem){
-        let newlySelectedPresetIndex = menu.index(of: sender) - 5
-        prefs.selected = newlySelectedPresetIndex
-        prefs.save()
-        state = .notStarted
-        currentTimer.stop()
-        currentTimer = prefs.returnSelectedTimer()
-        changeDisplayedTimers()
+    @IBAction func startStopClicked(_ sender: Any) {
+        if state == .notStarted {
+            currentTimer.delegate = self
+            currentTimer.start()
+            
+            statusItem.image = NSImage(named: "statusIconRunning")
+            startStopItem.title = "Stop"
+            pauseContinueItem.isEnabled = true
+            
+            state = .active
+        } else {
+            currentTimer.stop()
+            state = .notStarted
+        }
     }
     
-    func listenForPrefsChanged(){
-        let notificationName = Notification.Name(rawValue: "PrefsChanged")
-        NotificationCenter.default.addObserver(forName: notificationName,
-                                               object: nil, queue: nil) {
-                                                (notification) in
-                                                self.prefs = Preferences()
-                                                self.currentTimer.stop()
-                                                self.state = .notStarted
-                                                self.changeDisplayedTimers()
-                                                
+    @IBAction func pauseContinueClicked(_ sender: Any) {
+        if state != .paused{
+            currentTimer.pause()
+            state = .paused
+        }else{
+            currentTimer.unPause()
+            state = .active
         }
+    }
+    
+    func workFinished() {
+        sendNotification(title: "Donezoo", withSound: true)
+        state = .notStarted
+    }
+    
+    func pomodoroFinished() {
+        sendNotification(title: "Time for a break!", withSound: false)
+        state = .waiting
+    }
+    
+    func breakFinished() {
+        sendNotification(title: "Time for work yo!", withSound: false)
+        state = .waiting
+    }
+    
+    func updateRemaingTime(workTime: Int, pomodoroOrBreakTime: Int) {
+        timeItem.title = "\(pomodoroOrBreakTime) : \(workTime)"
     }
     
     func changeDisplayedTimers(){
@@ -160,51 +180,29 @@ class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDele
         menu.insertItem(NSMenuItem.separator(), at: menuPositionToInsertAt)
     }
     
-    @IBAction func startStopClicked(_ sender: Any) {
-        if state == .notStarted {
-            currentTimer.delegate = self
-            currentTimer.start()
-            
-            statusItem.image = NSImage(named: "statusIconRunning")
-            startStopItem.title = "Stop"
-            timeItem.title = "\(currentTimer.pomodoroLength) : \(currentTimer.workLength)"
-            pauseContinueItem.isEnabled = true
-            
-            state = .active
-        } else {
-            currentTimer.stop()
-            state = .notStarted
+    @objc func differentPresetSelcted(sender: NSMenuItem){
+        let newlySelectedPresetIndex = menu.index(of: sender) - 6
+        prefs.selected = newlySelectedPresetIndex
+        prefs.save()
+        state = .notStarted
+        currentTimer.stop()
+        currentTimer = prefs.returnSelectedTimer()
+        changeDisplayedTimers()
+    }
+    
+    func listenForPrefsChanged(){
+        let notificationName = Notification.Name(rawValue: "PrefsChanged")
+        NotificationCenter.default.addObserver(forName: notificationName,
+                                               object: nil, queue: nil) {
+                                                (notification) in
+                                                self.prefs = Preferences()
+                                                self.currentTimer.stop()
+                                                self.state = .notStarted
+                                                self.changeDisplayedTimers()
+                                                
         }
     }
     
-    @IBAction func pauseContinueClicked(_ sender: Any) {
-        if state != .paused{
-            currentTimer.pause()
-            state = .paused
-        }else{
-            currentTimer.unPause()
-            state = .active
-        }
-    }
-    
-    func workFinished() {
-        sendNotification(title: "Donezoo", withSound: true)
-    }
-    
-    func pomodoroFinished() {
-        sendNotification(title: "Time for a break!", withSound: false)
-        state = .waiting
-    }
-    
-    func breakFinished() {
-        sendNotification(title: "Time for work yo!", withSound: false)
-        state = .waiting
-    }
-    
-    
-    func updateRemaingTime(workTime: Int, pomodoroOrBreakTime: Int) {
-        timeItem.title = "\(pomodoroOrBreakTime) : \(workTime)"
-    }
     
     func sendNotification(title: String, withSound: Bool){
         

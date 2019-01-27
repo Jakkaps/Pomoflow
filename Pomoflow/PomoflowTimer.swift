@@ -50,36 +50,6 @@ class PomoflowTimer: NSObject, NSCoding{
         aCoder.encode(breakLength, forKey: "breakLength")
     }
     
-    func start(){
-        delegate?.updateRemaingTime(workTime: workLength, pomodoroOrBreakTime: pomodoroLength)
-        
-        startLongTimer(length: workLength)
-        startShortTimer(length: pomodoroLength)
-    }
-    
-    func startBreak(){
-        startShortTimer(length: breakLength)
-    }
-    
-    func startPomodoroSession(){
-        startShortTimer(length: pomodoroLength)
-    }
-    
-    func skip(){
-        onBreak = !onBreak
-        pomodoroOrBreakLengthRemaining = 0
-        pomodoroOrBreakTimer?.invalidate()
-        delegate?.updateRemaingTime(workTime: workLengthRemaining, pomodoroOrBreakTime: pomodoroOrBreakLengthRemaining)
-    }
-    
-    func startNext(){
-        if onBreak {
-            startShortTimer(length: breakLength)
-        } else {
-            startShortTimer(length: pomodoroLength)
-        }
-    }
-    
     private func startLongTimer(length: Int){
         workLengthRemaining = length
         
@@ -130,6 +100,19 @@ class PomoflowTimer: NSObject, NSCoding{
         }
     }
     
+    func start(){
+        delegate?.updateRemaingTime(workTime: workLength, pomodoroOrBreakTime: pomodoroLength)
+        
+        startLongTimer(length: workLength)
+        startShortTimer(length: pomodoroLength)
+    }
+    
+    func stop(){
+        delegate = nil
+        workTimer?.invalidate()
+        pomodoroOrBreakTimer?.invalidate()
+    }
+    
     func pause(){
         pomodoroOrBreakTimer?.invalidate()
         workTimer?.invalidate()
@@ -140,10 +123,19 @@ class PomoflowTimer: NSObject, NSCoding{
         startShortTimer(length: pomodoroOrBreakLengthRemaining)
     }
     
-    func stop(){
-        delegate = nil
-        workTimer?.invalidate()
+    func skip(){
+        onBreak = !onBreak
+        pomodoroOrBreakLengthRemaining = 0
         pomodoroOrBreakTimer?.invalidate()
+        delegate?.updateRemaingTime(workTime: workLengthRemaining, pomodoroOrBreakTime: pomodoroOrBreakLengthRemaining)
+    }
+    
+    func startNext(){
+        if onBreak {
+            startShortTimer(length: breakLength)
+        } else {
+            startShortTimer(length: pomodoroLength)
+        }
     }
     
     static func returnAsHours(min: Int) -> String{
